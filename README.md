@@ -30,7 +30,7 @@ A production-grade, full-stack expense tracking application with advanced AI cap
 
 ### Prerequisites
 - Node.js 18+
-- PostgreSQL 13+
+- mongodb atlas
 - Redis 6+
 - Docker (optional)
 
@@ -56,19 +56,11 @@ A production-grade, full-stack expense tracking application with advanced AI cap
    ```env
    DATABASE_URL=postgresql://username:password@localhost:5432/ai_expense_tracker
    JWT_SECRET=your-super-secret-jwt-key
-   OPENAI_API_KEY=your-openai-api-key
+   google-gemni-key = your-openai-api-key
    REDIS_URL=redis://localhost:6379
    ```
 
-4. **Set up the database**
-   ```bash
-   # Create PostgreSQL database
-   createdb ai_expense_tracker
-   
-   # The application will automatically create tables on first run
-   ```
-
-5. **Start the application**
+4. **Start the application**
    ```bash
    # Development mode
    npm run dev
@@ -77,7 +69,7 @@ A production-grade, full-stack expense tracking application with advanced AI cap
    npm start
    ```
 
-6. **Access the application**
+5. **Access the application**
    Open [http://localhost:3000](http://localhost:3000) in your browser
 
 ### Docker Deployment
@@ -235,16 +227,16 @@ Content-Type: application/json
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `DATABASE_URL` | PostgreSQL connection string | Required |
+| `DATABASE_URL` | mongodb connection string | Required |
 | `JWT_SECRET` | JWT signing secret | Required |
-| `OPENAI_API_KEY` | OpenAI API key for LLM features | Required |
+| `GOOGLE_API_KEY` | GOOGLE_API_KEY for LLM features | Required |
 | `REDIS_URL` | Redis connection string | `redis://localhost:6379` |
 | `PORT` | Server port | `3000` |
 | `NODE_ENV` | Environment mode | `development` |
 | `MAX_FILE_SIZE` | Max upload file size | `10485760` (10MB) |
 
 ### Database Configuration
-The application automatically creates the required database tables on startup. For production, ensure your PostgreSQL instance has:
+The application automatically creates the required database tables on startup. For production, ensure your mongodb instance has:
 - Sufficient storage for expense data
 - Regular backups configured
 - Connection pooling enabled
@@ -275,7 +267,7 @@ npm test -- --grep "auth"
 - [ ] Set strong JWT secret
 - [ ] Configure production database
 - [ ] Set up Redis for caching
-- [ ] Configure OpenAI API key
+- [ ] Configure GOOGLE_API_KEY
 - [ ] Set up SSL certificates
 - [ ] Configure monitoring and logging
 - [ ] Set up backup strategy
@@ -284,21 +276,7 @@ npm test -- --grep "auth"
 
 ### Deployment Options
 
-#### Heroku
-```bash
-# Install Heroku CLI
-npm install -g heroku
 
-# Create Heroku app
-heroku create ai-expense-tracker
-
-# Set environment variables
-heroku config:set DATABASE_URL=postgresql://...
-heroku config:set OPENAI_API_KEY=...
-
-# Deploy
-git push heroku main
-```
 
 #### AWS/GCP/Azure
 Use the provided Docker configuration with your preferred container orchestration service.
@@ -354,19 +332,16 @@ Use the provided Docker configuration with your preferred container orchestratio
 - Follow conventional commits
 - Ensure all tests pass
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
-- **OpenAI** for LLM capabilities
+- **GOOGLE gemini** for LLM capabilities
 - **Tesseract.js** for OCR functionality
 - **Chart.js** for data visualization
-- **PostgreSQL** for robust data storage
+- **Mongodb atlas** for robust data storage
 - **Express.js** for the web framework
 
-## 📞 Support
 
 For support, email support@ai-expense-tracker.com or create an issue on GitHub.
 

@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Expense Tracker</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/5.0.4/tesseract.min.js"></script>
+    <link rel="shortcut icon" href="./assets/image/favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Login/Register Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <div class="auth-container">
+                <div class="auth-tabs">
+                    <button class="tab-btn active" data-tab="login">Login</button>
+                    <button class="tab-btn" data-tab="register">Register</button>
+                </div>
+                
+                <div id="loginForm" class="auth-form active">
+                    <h2>Welcome Back</h2>
+                    <form id="loginFormElement">
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                        <input type="password" id="loginPassword" placeholder="Password" required>
+                        <button type="submit">Login</button>
+                    </form>
+                </div>
+                
+                <div id="registerForm" class="auth-form">
+                    <h2>Create Account</h2>
+                    <form id="registerFormElement">
+                        <input type="text" id="registerFirstName" placeholder="First Name" required>
+                        <input type="text" id="registerLastName" placeholder="Last Name" required>
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+                        <input type="password" id="registerPassword" placeholder="Password" required>
+                        <button type="submit">Register</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- AI Assistant Modal -->
+    <div id="aiModal" class="modal">
+        <div class="modal-content ai-modal">
+            <div class="ai-header">
+                <h3><i class="fas fa-robot"></i> AI Assistant</h3>
+                <button class="close-btn" onclick="closeAIModal()">&times;</button>
+            </div>
+            <div class="ai-chat">
+                <div id="aiMessages" class="ai-messages"></div>
+                <div class="ai-input">
+                    <input type="text" id="aiMessageInput" placeholder="Ask about your expenses...">
+                    <button onclick="sendAIMessage()"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App (hidden until authenticated) -->
+    <div id="mainApp" style="display: none;">
+        <header>
+            <div class="Header">
+                <span>AI-Powered Expense Tracker</span>
+                <div class="user-info">
+                    <span id="userName">User</span>
+                    <button onclick="logout()" class="logout-btn">Logout</button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="container">
+            <h1>AI Expense Tracker</h1>
+            
+            <!-- AI Features Bar -->
+            <div class="ai-features-bar">
+                <button class="ai-btn" onclick="openAIModal()">
+                    <i class="fas fa-robot"></i> Ask AI
+                </button>
+                <button class="ai-btn" onclick="generateInsights()">
+                    <i class="fas fa-lightbulb"></i> Get Insights
+                </button>
+                <button class="ai-btn" onclick="semanticSearch()">
+                    <i class="fas fa-search"></i> Smart Search
+                </button>
+            </div>
+            
+            <!-- Monthly Limit Section -->
+            <div class="limit-container">
+                <input type="number" id="monthlyLimit" placeholder="Set Monthly Limit">
+                <button id="setLimit">Set Limit</button>
+                <button id="resetLimit"><i class="fa-solid fa-arrow-rotate-left"></i></button>
+            </div>
+            
+            <!-- Current Status Section -->
+            <div class="status-container">
+                <div class="status-item">
+                    <h3>Monthly Limit:</h3>
+                    <p id="limitAmount">₹0.00</p>
+                </div>
+                <div class="status-item">
+                    <h3>Total Expenses:</h3>
+                    <p id="totalExpenses">₹0.00</p>
+                </div>
+                <div class="status-item">
+                    <h3>Remaining:</h3>
+                    <p id="remainingAmount">₹0.00</p>
+                </div>
+                <div class="status-item ai-status">
+                    <h3>AI Insights:</h3>
+                    <p id="aiInsightsCount">0</p>
+                </div>
+            </div>
+
+            <!-- Search and Filter Section -->
+            <div class="search-filter-container">
+                <input type="text" id="searchExpense" placeholder="Search expenses...">
+                <select id="categoryFilter">
+                    <option value="all">All Categories</option>
+                    <option value="food">Food</option>
+                    <option value="transport">Transport</option>
+                    <option value="utilities">Utilities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="education">Education</option>
+                    <option value="other">Other</option>
+                </select>
+                <button id="exportData" class="export-btn">
+                    <i class="fas fa-download"></i> Export JSON
+                </button>
+                <button id="exportPdf" class="export-btn">
+                    <i class="fas fa-file-pdf"></i> Export PDF
+                </button>
+            </div>
+
+            <!-- Add Expense Form -->
+            <div class="form-container">
+                <input type="text" id="expenseName" placeholder="Expense Name">
+                <input type="number" id="expenseAmount" placeholder="Amount">
+                <input type="date" id="expenseDate">
+                <select id="expenseCategory">
+                    <option value="auto">Auto-Categorize (AI)</option>
+                    <option value="food">Food</option>
+                    <option value="transport">Transport</option>
+                    <option value="utilities">Utilities</option>
+                    <option value="entertainment">Entertainment</option>
+                    <option value="shopping">Shopping</option>
+                    <option value="healthcare">Healthcare</option>
+                    <option value="education">Education</option>
+                    <option value="other">Other</option>
+                </select>
+                <textarea id="expenseNotes" placeholder="Add notes (optional)"></textarea>
+                
+                <!-- Receipt Upload Section -->
+                <div class="receipt-upload">
+                    <input type="file" id="receiptFile" accept="image/*,application/pdf" style="display: none;">
+                    <button type="button" onclick="document.getElementById('receiptFile').click()" class="receipt-btn">
+                        <i class="fas fa-camera"></i> Scan Receipt
+                    </button>
+                    <div id="receiptPreview" class="receipt-preview" style="display: none;">
+                        <img id="receiptImage" src="" alt="Receipt Preview">
+                        <button type="button" onclick="processReceipt()" class="process-btn">
+                            <i class="fas fa-magic"></i> Extract Data
+                        </button>
+                    </div>
+                </div>
+                
+                <button id="addExpense">Add Expense</button>
+            </div>
+
+            <!-- Expenses List -->
+            <div class="expense-list">
+                <h2>Expenses</h2>
+                <ul id="expensesList"></ul>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="charts-container">
+                <div class="chart-container">
+                    <h3>Expense Distribution</h3>
+                    <canvas id="expenseChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Monthly Trend</h3>
+                    <canvas id="trendChart"></canvas>
+                </div>
+            </div>
+
+            <!-- AI Insights Section -->
+            <div class="ai-insights-container">
+                <h3><i class="fas fa-brain"></i> AI Insights</h3>
+                <div id="aiInsights" class="ai-insights">
+                    <p>Click "Get Insights" to see AI-powered spending analysis</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div>
+            <p style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-left: 20px;">
+                Created with ❤ by Mohd Gulmaan - AI-Powered Expense Tracking
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+# Dependencies
+node_modules/
+EXPENSE_TRACKER-main/node_modules/
+
+# Environment files / secrets
+.env
+.env.*.local
+EXPENSE_TRACKER-main/.env
+EXPENSE_TRACKER-main/.env.*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+EXPENSE_TRACKER-main/logs/
+
+# Build outputs / coverage
+build/
+dist/
+coverage/
+.next/
+.out/
+.tmp/
+.cache/
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Uploaded files and local data
+uploads/
+EXPENSE_TRACKER-main/uploads/
+
+# Editor settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS / misc
+.DS_Store
+Thumbs.db
+
+# Docker / Compose local data (if any)
+**/data/**
+
+# Optional: tests artifacts
+*.tgz
+*.zip
+
+# Ignore outer duplicate lockfiles if present
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+EXPENSE_TRACKER-main/package-lock.json
+EXPENSE_TRACKER-main/pnpm-lock.yaml
+EXPENSE_TRACKER-main/yarn.lock

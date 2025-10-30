@@ -343,7 +343,7 @@ Use the provided Docker configuration with your preferred container orchestratio
 - **Express.js** for the web framework
 
 
-For support, email support@ai-expense-tracker.com or create an issue on GitHub.
+For support, email gulmanmeer080@gmail.com or create an issue on GitHub.
 
 ---
 
